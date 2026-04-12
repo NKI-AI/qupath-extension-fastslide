@@ -21,7 +21,9 @@ dependencies {
     shadow(libs.qupath.fxtras)
 
     implementation(files("libs/fastslide-java-0.2.2.jar"))
-    runtimeOnly(files("libs/fastslide-native-0.2.2-darwin-aarch64.jar"))
+    fileTree("libs").filter { it.name.startsWith("fastslide-native-") }.forEach {
+        runtimeOnly(files(it))
+    }
 
     testImplementation(libs.bundles.qupath)
     testImplementation(libs.junit)
@@ -34,5 +36,7 @@ tasks.register<Jar>("fatJar") {
 
     from(sourceSets.main.get().output)
     from(zipTree("libs/fastslide-java-0.2.2.jar"))
-    from(zipTree("libs/fastslide-native-0.2.2-darwin-aarch64.jar"))
+    fileTree("libs").filter { it.name.startsWith("fastslide-native-") }.forEach {
+        from(zipTree(it))
+    }
 }
