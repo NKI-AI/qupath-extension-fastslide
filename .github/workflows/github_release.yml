@@ -1,10 +1,57 @@
-name: Make draft release
+name: Release
+
+# Builds the fat JAR (extension code + FastSlide Java API + all native
+# libraries) and publishes it as a GitHub Release asset. The asset name must
+# match the `main_url` referenced by the QuPath catalog
+# (https://github.com/NKI-AI/qupath-extension-catalog).
+#
+# Trigger by pushing a tag like `v0.1.0`, or run manually (the tag is then
+# derived from the version in build.gradle.kts).
 
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  build:
-    permissions:
-      contents: write
-    uses: qupath/actions/.github/workflows/github-release.yml@main
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Build fat JAR
+        run: ./gradlew fatJar --no-daemon
+
+      - name: Resolve version, tag and artifact
+        id: artifact
+        run: |
+          version=$(./gradlew -q properties --no-daemon | awk '/^version:/ {print $2}')
+          jar=$(ls build/libs/qupath-extension-fastslide-fat-*.jar)
+          echo "jar=$jar" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Releasing ${jar} as tag v${version}"
+
+      - name: Create GitHub Release with fat JAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.artifact.outputs.tag }}" \
+            "${{ steps.artifact.outputs.jar }}" \
+            --title "${{ steps.artifact.outputs.tag }}" \
+            --target "${{ github.sha }}" \
+            --generate-notes

@@ -3,6 +3,8 @@ package qupath.lib.images.servers.fastslide;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -55,23 +57,45 @@ public class FastSlideExtension implements QuPathExtension {
 	}
 
 	private void addPreferenceToPane(QuPathGUI qupath) {
+		var items = qupath.getPreferencePane().getPropertySheet().getItems();
+
 		var propertyItem = new PropertyItemBuilder<>(enableExtensionProperty, Boolean.class)
 				.name(resources.getString("menu.enable"))
 				.category("FastSlide extension")
 				.description("Enable the FastSlide extension")
 				.build();
-		qupath.getPreferencePane()
-				.getPropertySheet()
-				.getItems()
-				.add(propertyItem);
+		items.add(propertyItem);
+
+		// One checkbox per supported file format, so users can choose which
+		// extensions FastSlide responds to when opening images.
+		for (FastSlideSupportedFormats.Format format : FastSlideSupportedFormats.all()) {
+			var formatItem = new PropertyItemBuilder<>(format.enabled(), Boolean.class)
+					.name(format.label())
+					.category("FastSlide file formats")
+					.description("Open " + format.label() + " images with FastSlide")
+					.build();
+			items.add(formatItem);
+		}
 	}
 
 	private void addMenuItem(QuPathGUI qupath) {
 		var menu = qupath.getMenu("Extensions>" + EXTENSION_NAME, true);
+
 		MenuItem menuItemVersion = new MenuItem("Show Version");
 		menuItemVersion.setOnAction(e -> showFastSlideVersion());
 		menuItemVersion.disableProperty().bind(enableExtensionProperty.not());
 		menu.getItems().add(menuItemVersion);
+
+		// Checkable menu items mirroring the per-format preferences, so users can
+		// toggle which file extensions FastSlide responds to directly from the menu.
+		Menu formatsMenu = new Menu("Supported file formats");
+		formatsMenu.disableProperty().bind(enableExtensionProperty.not());
+		for (FastSlideSupportedFormats.Format format : FastSlideSupportedFormats.all()) {
+			CheckMenuItem item = new CheckMenuItem(format.label());
+			item.selectedProperty().bindBidirectional(format.enabled());
+			formatsMenu.getItems().add(item);
+		}
+		menu.getItems().add(formatsMenu);
 	}
 
 	private void showFastSlideVersion() {
