@@ -3,7 +3,7 @@ plugins {
     id("qupath-conventions")
 }
 
-val fastslideVersion = "0.7.2"
+val fastslideVersion = "0.7.3"
 
 // One classifier per supported platform; matches the GitHub Release assets
 // produced by NKI-AI/fastslide (fastslide-native-<version>-<os>-<arch>.jar).
@@ -41,7 +41,7 @@ repositories {
 qupathExtension {
     name = "qupath-extension-fastslide"
     group = "io.github.qupath"
-    version = "0.1.1"
+    version = "0.1.2"
     description = "QuPath extension for reading whole-slide images via FastSlide"
     automaticModule = "io.github.qupath.extension.fastslide"
 }
