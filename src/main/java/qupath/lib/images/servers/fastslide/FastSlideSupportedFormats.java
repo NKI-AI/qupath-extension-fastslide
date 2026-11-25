@@ -45,14 +45,19 @@ public final class FastSlideSupportedFormats {
     private static final List<Format> FORMATS = List.of(
             format("svs", "Aperio (.svs)", ".svs"),
             format("ome-tiff", "OME-TIFF (.ome.tif, .ome.tiff)", ".ome.tiff", ".ome.tif"),
+            // OME-Zarr stores are directories; QuPath (0.6+) opens a dropped *.zarr folder.
+            format("ome-zarr", "OME-Zarr (.ome.zarr, .zarr)", ".ome.zarr", ".zarr"),
             format("tiff", "Generic TIFF (.tif, .tiff)", ".tiff", ".tif"),
             format("czi", "Zeiss CZI (.czi)", ".czi"),
             format("mrxs", "MIRAX (.mrxs)", ".mrxs"),
             format("qptiff", "QPTIFF (.qptiff)", ".qptiff"),
             format("ndpi", "Hamamatsu NDPI (.ndpi)", ".ndpi"),
-            format("isyntax", "Philips iSyntax (.isyntax)", ".isyntax"),
+            format("isyntax", "Philips iSyntax (.isyntax, .i2syntax)", ".isyntax", ".i2syntax"),
             format("vsi", "Olympus VSI (.vsi)", ".vsi"),
-            format("bif", "Ventana BIF (.bif)", ".bif"));
+            format("bif", "Ventana BIF (.bif)", ".bif"),
+            // Any one .dcm file of a DICOM WSI series opens the whole series:
+            // FastSlide collects the other instances from the same folder.
+            format("dicom", "DICOM WSI (.dcm)", ".dcm"));
 
     /** All known formats, in display order. */
     public static List<Format> all() {
