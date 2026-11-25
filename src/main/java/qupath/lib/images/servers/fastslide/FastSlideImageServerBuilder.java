@@ -72,6 +72,10 @@ public class FastSlideImageServerBuilder implements ImageServerBuilder<BufferedI
             return 0;
         }
         String lower = path.toLowerCase();
+        // URIs of directories (OME-Zarr stores) end with '/'; match on the name.
+        while (lower.endsWith("/")) {
+            lower = lower.substring(0, lower.length() - 1);
+        }
         // Only respond to formats whose checkbox is enabled in the preferences.
         return FastSlideSupportedFormats.isEnabledFor(lower) ? SUPPORT_LEVEL : 0;
     }

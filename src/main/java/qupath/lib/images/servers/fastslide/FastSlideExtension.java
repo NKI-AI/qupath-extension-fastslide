@@ -28,7 +28,9 @@ public class FastSlideExtension implements QuPathExtension {
 
 	private static final String EXTENSION_NAME = resources.getString("name");
 	private static final String EXTENSION_DESCRIPTION = resources.getString("description");
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.6.0");
+	// FastSlide's Java API uses the final FFM API (Java 22+). QuPath 0.6 bundles
+	// Java 21; QuPath 0.7 bundles Java 25.
+	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 
 	private boolean isInstalled = false;
 

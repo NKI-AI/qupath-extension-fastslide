@@ -1,15 +1,19 @@
 # QuPath FastSlide Extension
 
-A [QuPath](https://qupath.github.io) extension that reads whole-slide images using [FastSlide](https://github.com/aiforoncology/fastslide).
+A [QuPath](https://qupath.github.io) extension that reads whole-slide images using [FastSlide](https://github.com/NKI-AI/fastslide).
 
 Supports brightfield (RGB) and fluorescence/spectral (multi-channel) slides across all formats FastSlide handles:
-`.svs`, `.tiff`, `.ome.tiff`, `.czi`, `.mrxs`, `.qptiff`, `.ndpi`, `.scn`, `.bif`, `.isyntax`, `.i2syntax`.
+`.svs`, `.tif`/`.tiff` (generic and Philips TIFF), `.ome.tif`/`.ome.tiff`, `.ome.zarr`/`.zarr`, `.czi`, `.mrxs`, `.qptiff`, `.ndpi`, `.isyntax`, `.i2syntax`, `.vsi`, `.bif` and DICOM WSI (`.dcm`).
 
-Works on macOS (arm64/x86_64), Linux (x86_64/aarch64), and Windows (x86_64).
+- **OME-Zarr** stores are folders: drag the `.zarr` folder onto QuPath.
+- **DICOM WSI**: open any one `.dcm` file of the series; FastSlide finds the other instances in the same folder.
+- Each format can be switched off under *Extensions → FastSlide extension → Supported file formats* (or in the preferences), so QuPath's own readers handle it instead.
+
+Works on macOS (arm64/x86_64), Linux (x86_64/aarch64), and Windows (x86_64/arm64).
 
 ## Install
 
-Download `qupath-extension-fastslide-fat-<version>.jar` from the [Releases](https://github.com/aiforoncology/qupath-extension-fastslide/releases) page and drag it onto QuPath, or place it in QuPath's extensions directory.
+Add the [NKI-AI extension catalog](https://github.com/NKI-AI/qupath-extension-catalog) in QuPath (*Extensions → Manage extensions → Manage extension catalogs*), or download `qupath-extension-fastslide-fat-<version>.jar` from the [Releases](https://github.com/NKI-AI/qupath-extension-fastslide/releases) page and drag it onto QuPath.
 
 ## Build
 
